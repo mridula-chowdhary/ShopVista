@@ -10,12 +10,14 @@ import productRoutes from './routes/productRoute.js'
 
 dotenv.config();
 connectDB();
+// dotenv.config({path:"./config/db.js"})
 //rest obj
 const app= express();
 //middleware
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors());
+// 
 //routes
 app.use("/api/v1/auth",authRoutes);
 app.use("/api/v1/category",categoryRoutes);
