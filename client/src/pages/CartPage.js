@@ -3,6 +3,7 @@ import Layout from "./../component/Layout/Layout";
 import { useCart } from "../context/cart";
 import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 const CartPage = () => {
   const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
@@ -35,6 +36,18 @@ const CartPage = () => {
       console.log(error);
     }
   };
+  const handlePlaceOrder = () => {
+    // Logic to place the order
+
+    // Show toast notification
+    toast.success('Order placed successfully!',{
+      autoClose: 6000,
+    })    
+      // setCart(0)
+      setCart([]);
+      localStorage.removeItem("cart");
+   
+  }
   return (
     <Layout>
       <div className="container">
@@ -122,9 +135,7 @@ const CartPage = () => {
             )}
           <div className="mt-2">
           {cart.length ?(
-            <button className="btn btn-primary" onClick={()=>
-            navigate("/myorder")} >Place your Order
-            </button>):
+            <button className="btn btn-primary"  onClick={handlePlaceOrder}>Place your Order</button>):
             (<button className="btn btn-primary"onClick={()=>navigate("/")}>Add item to your cart</button>)
 }
           </div>
