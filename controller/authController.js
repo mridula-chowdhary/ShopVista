@@ -1,12 +1,14 @@
 import { comparePassword, hashPassword } from "../helper/authHelper.js";
-import userModel from "../models/userModel.js"
+import orderModelModel from "../models/orderModel.js"
+import userModel from "../models/userModel.js";
 import JWT from "jsonwebtoken";
+
 
 
 export const registerController =async(req,res)=>{
 
    try{
-      const {name,email,password,phone,address}=req.body;
+      const {name,email,password,phone,address,answer}=req.body;
       //validation
       if (!name) {
         return res.send({ message: "Name is Required" });
@@ -23,6 +25,9 @@ export const registerController =async(req,res)=>{
       if (!address) {
         return res.send({ message: "Address is Required" });
       }
+      if (!answer) {
+        return res.send({ message: "Answer is Required" });
+      }
       //check user
       const existingUser = await userModel.findOne({email});
       if(existingUser){
@@ -34,10 +39,10 @@ export const registerController =async(req,res)=>{
       //
       const hashedPassword= await hashPassword(password);
 
-      const user= await new userModel({name,email,phone,address,password:hashedPassword}).save()
+      const user= await new userModel({name,email,phone,address,password:hashedPassword,answer}).save()
       res.status(201).send({
-    success:true,
-    message:" User Registered Successfully",
+       success:true,
+       message:" User Registered Successfully",
     user,
 });  }
    catch(error){
@@ -144,3 +149,23 @@ export const updateProfileController = async (req, res) => {
     });
   }
 };
+export const getOrderController=async(req,res)=>{
+  try{
+    const { orderId } = req.params;
+    const { status } = req.body;
+    const orders = await orderModel.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    );
+    res.json(orders);
+  }
+  catch(error){
+    console.log(error)
+    res.status(500).send({
+      success:false,
+      message: 'Error while getting orders',
+      error
+    })
+  }
+}
